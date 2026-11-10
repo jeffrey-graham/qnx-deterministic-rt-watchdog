@@ -15,7 +15,7 @@ Safety-critical autonomous robotics and automotive edge controllers require pred
 
 1. **QNX Neutrino Synchronous IPC Engine (`src/qnx_rt_watchdog.c`, `include/qnx_rt.h`)**:
    - Uses native QNX SDP 8.0 message-passing primitives (`ChannelCreate(_NTO_CHF_FIXED_PRIORITY)`, `ConnectAttach()`, `MsgSend()`, `MsgReceive()`, `MsgReply()`) when compiled with `qcc` (`__QNXNTO__`).
-   - Includes a portable POSIX synchronous rendezvous shim with priority-inheritance mutexes (`PTHREAD_PRIO_INHERIT`) so developers and CI pipelines can compile and benchmark the exact state machine on standard Linux hosts (`gcc -std=c11 -O2 -Wall -Wextra -Werror`).
+   - Includes a portable POSIX synchronous rendezvous shim with priority-inheritance mutexes (`PTHREAD_PRIO_INHERIT`) so developers and CI pipelines can compile and benchmark the exact state machine on standard Linux hosts (`gcc -std=c11 -O2 -Wall -Wextra -Werror`). *(Note: Automated `make test` benchmarks in this repository are executed via the Linux `gcc` POSIX shim; cross-compiling the `__QNXNTO__` path via `make qnx` requires a licensed QNX SDP 8.0 host toolchain.)*
 2. **Constant-Time $O(1)$ Kalman Filter with 4.5-Sigma Innovation Gate (`src/sensor_fusion.c`)**:
    - Zero dynamic heap allocation (`malloc`/`free` strictly forbidden inside the 1kHz loop).
    - Fuses 1kHz IMU acceleration, LiDAR forward obstacle range, and wheel odometry while deterministically rejecting `+85.0 m` LiDAR multipath reflection spikes in `< 10 microseconds`.
